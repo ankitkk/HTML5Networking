@@ -1,4 +1,4 @@
-### Websocket Networking plugin for Unreal Engine 4. 
+### Unreal Engine 4 Networking Plugin over Websockets. 
 
 - Provides websocket transport layer for unreal engine 4. 
 - Uses [libwebsockets](http://libwebsocket.org) for the server side and client side for non HTML5 clients.  
