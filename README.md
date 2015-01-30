@@ -1,18 +1,14 @@
 ### Websocket Networking plugin for Unreal Engine 4. 
 
-- provides websocket transport layer for unreal engine 4. 
-- uses [libwebsockets](http://libwebsocket.org) for the server side and client side for non html5 clients.  
-- html5 clients use emscripten's sockets abstraction. 
+- Provides websocket transport layer for unreal engine 4. 
+- Uses [libwebsockets](http://libwebsocket.org) for the server side and client side for non HTML5 clients.  
+- HTML5 clients use emscripten's sockets abstraction. 
 
-#### How to. 
+#### How to
 
-- clone this in Engine\Plugins\Experimental directory. 
-
-
-BaseEngine.ini changes. 
-
-Add the following section
-
+- Clone this in Engine\Plugins\Experimental directory. 
+- Add the following section in `BaseEngine.ini`
+```
 [/Script/HTML5Networking.WebSocketNetDriver]
 AllowPeerConnections=False
 AllowPeerVoice=False
@@ -30,13 +26,17 @@ LanServerMaxTickRate=35
 WebSocketPort=8889
 NetConnectionClassName="/Script/HTML5Networking.WebSocketConnection"
 MaxPortCountToTry=512
-
+```
 In section [/Script/Engine.Engine] disable comment out NetDriverDefinitions and add 
-
+```
 NetDriverDefinitions=(DefName="GameNetDriver",DriverClassName="/Script/HTML5Networking.WebSocketNetDriver",DriverClassNameFallback="/Script/HTML5Networking.IpNetDriver")
-
+```
 To enable this Net Driver. 
 
-Build! 
+Build! and follow existing Unreal Networking documentation to setup servers/clients.
+
+#### Issues/Todo 
+
+Disconnect events on client or server side are not handled properly yet 
 
 Copyright 2015 Epic Games. 
