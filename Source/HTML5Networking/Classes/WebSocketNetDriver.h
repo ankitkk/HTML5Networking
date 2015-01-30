@@ -28,13 +28,13 @@ class HTML5NETWORKING_API UWebSocketNetDriver : public UNetDriver
 	virtual void TickDispatch(float DeltaTime) override;
 	virtual FString LowLevelGetNetworkNumber() override;
 	virtual void LowLevelDestroy() override;
-	virtual class ISocketSubsystem* GetSocketSubsystem() override;
 	virtual bool IsNetResourceValid(void) override;
-	// End UNetDriver Interface
 
-	// Begin UIpNetDriver interface.
+	// stub implementation because for websockets we don't use any underlying socket sub system.
+	virtual class ISocketSubsystem* GetSocketSubsystem() override;
 	virtual FSocket * CreateSocket();
-	// End UIpNetDriver interface.
+
+	// End UNetDriver interface.
 
 	// Begin FExec Interface
 	virtual bool Exec(UWorld* InWorld, const TCHAR* Cmd, FOutputDevice& Ar = *GLog) override;

@@ -31,9 +31,11 @@ UWebSocketNetDriver::UWebSocketNetDriver(const FObjectInitializer& ObjectInitial
 
 bool UWebSocketNetDriver::IsAvailable() const
 {
-	// IP driver always valid for now
+	// Websocket driver always valid for now
 	return true;
 }
+
+
 
 ISocketSubsystem* UWebSocketNetDriver::GetSocketSubsystem()
 {
@@ -102,16 +104,16 @@ bool UWebSocketNetDriver::InitListen(FNetworkNotify* InNotify, FURL& LocalURL, b
 	FWebsocketClientConnectedCallBack CallBack;
 	CallBack.BindUObject(this, &UWebSocketNetDriver::OnWebSocketClientConnected);
 
-	WebSocketServer->Init(WebSocketPort, CallBack);
+	if(!WebSocketServer->Init(WebSocketPort, CallBack))
+		return false; 
+
 	WebSocketServer->Tick();
-
 	LocalURL.Port = WebSocketPort;
-
 	UE_LOG(LogHTML5Networking, Log, TEXT("%s WebSocketNetDriver listening on port %i"), *GetDescription(), LocalURL.Port);
 
+	// server has no server connection. 
 	ServerConnection = NULL; 
 	return true;
-
 }
 
 void UWebSocketNetDriver::TickDispatch(float DeltaTime)
@@ -267,7 +269,7 @@ bool UWebSocketNetDriver::IsNetResourceValid(void)
 	return false; 
 }
 
-// Just logging. 
+// Just logging, not yet attached to html5 clients.
 void UWebSocketNetDriver::OnWebSocketServerConnected()
 {
 	check(GetServerConnection());

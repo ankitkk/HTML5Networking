@@ -21,13 +21,11 @@ public:
 
 	void SetConnectedCallBack(FWebsocketInfoCallBack CallBack);
 	void SetErrorCallBack(FWebsocketInfoCallBack CallBack);
-	// CallBack when data is ready to pushed upstream. 
 	void SetRecieveCallBack(FWebsocketPacketRecievedCallBack CallBack);
 
-	// Send data.
 	bool Send(uint8* Data, uint32 Size);
 
-	// Service libwebSocket. 
+	// Service libwebsockets. 
 	void Tick();
 
 	FString RemoteEndPoint();
@@ -38,24 +36,15 @@ private:
 	void OnRawRecieve(void* Data, uint32 Size);
 	void OnRawWebSocketWritable(WebSocketInternal* wsi);
 
-
-	// context. 
 	WebSocketInternalContext* Context;
-	// internal 
 	WebSocketInternal* Wsi;
 
 	FWebsocketPacketRecievedCallBack  RecievedCallBack; 
 	FWebsocketInfoCallBack ConnectedCallBack;
 	FWebsocketInfoCallBack ErrorCallBack;
 
-	// data being received. 
 	TArray<uint8> RecievedBuffer;
-	// data being sent out. 
 	TArray<TArray<uint8>> OutgoingBuffer;
-	// Current Write Mode.
-	uint32 CurrentTotalWritten;
-
-	uint32 BytesNeedToBeRead; 
 
 	bool IsServerSide; 
 

@@ -22,9 +22,7 @@ Declarations.
 
 UWebSocketConnection::UWebSocketConnection(const FObjectInitializer& ObjectInitializer) :
 Super(ObjectInitializer),
-Socket(NULL),
-WebSocket(NULL),
-ResolveInfo(NULL)
+WebSocket(NULL)
 {
 }
 
@@ -36,8 +34,6 @@ void UWebSocketConnection::InitBase(UNetDriver* InDriver, class FSocket* InSocke
 		InMaxPacket == 0 ? WINSOCK_MAX_PACKET : InMaxPacket,
 		InPacketOverhead == 0 ? SLIP_HEADER_SIZE : InPacketOverhead);
 
-	Socket = InSocket;
-	ResolveInfo = NULL;
 }
 
 void UWebSocketConnection::InitLocalConnection(UNetDriver* InDriver, class FSocket* InSocket, const FURL& InURL, EConnectionState InState, int32 InMaxPacket, int32 InPacketOverhead)
@@ -93,20 +89,17 @@ FString UWebSocketConnection::LowLevelDescribe()
 		);
 }
 
-int32 UWebSocketConnection::GetAddrAsInt(void)
-{
-	return  0;
-}
-
-int32 UWebSocketConnection::GetAddrPort(void)
-{
-	return  0;
-}
 
 void UWebSocketConnection::SetWebSocket(FWebSocket* InWebSocket)
 {
 	WebSocket = InWebSocket; 
 }
+
+FWebSocket* UWebSocketConnection::GetWebSocket()
+{
+	return WebSocket;
+}
+
 
 void UWebSocketConnection::Tick()
 {
@@ -121,3 +114,4 @@ void UWebSocketConnection::FinishDestroy()
 	WebSocket = NULL;
 
 }
+

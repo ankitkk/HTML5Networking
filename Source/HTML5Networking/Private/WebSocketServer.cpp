@@ -15,8 +15,6 @@
 #include "HideWindowsPlatformTypes.h"
 #endif
 
-#pragma optimize("",off)
-
 // a object of this type is associated by libwebsocket to every connected session. 
 struct PerSessionData
 {
@@ -78,8 +76,9 @@ bool FWebSocketServer::Init(uint32 Port, FWebsocketClientConnectedCallBack CallB
 	Info.port = Port; 
 	Context = libwebsocket_create_context(&Info);
 
-	if (Context == NULL) {
-		return false;
+	if (Context == NULL) 
+	{
+		return false; // couldn't create a server. 
 	}
 
 	ConnectedCallBack = CallBack; 

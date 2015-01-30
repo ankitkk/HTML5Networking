@@ -18,8 +18,6 @@
 #include <emscripten.h>
 #endif
 
-#pragma  optimize("",off)
-
 #if PLATFORM_WINDOWS
 #include "AllowWindowsPlatformTypes.h"
 #endif
@@ -59,8 +57,7 @@ static void libwebsocket_debugLogS(int level, const char *line)
 FWebSocket::FWebSocket(
 		const FInternetAddr& ServerAddress
 )
-:CurrentTotalWritten(0),
-IsServerSide(false)
+:IsServerSide(false)
 {
 
 #if !PLATFORM_HTML5_BROWSER
@@ -137,10 +134,9 @@ IsServerSide(false)
 }
 
 FWebSocket::FWebSocket(WebSocketInternalContext* InContext, WebSocketInternal* InWsi)
-:Context(InContext), 
-Wsi(InWsi),
-CurrentTotalWritten(0),
-IsServerSide(true)
+:	Context(InContext), 
+	Wsi(InWsi),
+	IsServerSide(true)
 {
 }
 
