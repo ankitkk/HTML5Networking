@@ -15,7 +15,6 @@ Unreal Websocket network driver.
 #include "WebSocketServer.h"
 #include "WebSocket.h"
 
-#pragma optimize("",off)
 
 /*-----------------------------------------------------------------------------
 Declarations.
