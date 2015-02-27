@@ -1,5 +1,4 @@
 // Copyright 1998-2015 Epic Games, Inc. All Rights Reserved.
-#if !PLATFORM_HTML5
 
 #include "HTML5NetworkingPCH.h"
 #include "WebSocketServer.h"
@@ -9,7 +8,9 @@
 #include "AllowWindowsPlatformTypes.h"
 #endif
 
+#if !PLATFORM_HTML5
 #include "libwebsockets.h"
+#endif 
 
 #if PLATFORM_WINDOWS
 #include "HideWindowsPlatformTypes.h"
@@ -22,6 +23,7 @@ struct PerSessionData
 };
 
 
+#if !PLATFORM_HTML5
 // real networking handler. 
 static int unreal_networking_server(
 	struct libwebsocket_context *,
@@ -39,9 +41,11 @@ static int unreal_networking_server(
 		UE_LOG(LogHTML5Networking, Warning, TEXT("websocket server: %s"), ANSI_TO_TCHAR(line));
 	}
 #endif 
+#endif 
 
 bool FWebSocketServer::Init(uint32 Port, FWebsocketClientConnectedCallBack CallBack)
 {
+#if !PLATFORM_HTML5
 	// setup log level.
 #if !UE_BUILD_SHIPPING
 	lws_set_log_level(LLL_ERR | LLL_WARN | LLL_NOTICE | LLL_DEBUG | LLL_INFO, libwebsocket_debugLog);
@@ -84,14 +88,19 @@ bool FWebSocketServer::Init(uint32 Port, FWebsocketClientConnectedCallBack CallB
 	ConnectedCallBack = CallBack; 
 
 	return true;
+#else
+	return true; 
+#endif 
 }
 
 bool FWebSocketServer::Tick()
 {
+#if !PLATFORM_HTML5
 	{
 		libwebsocket_service(Context, 0);
 		libwebsocket_callback_on_writable_all_protocol(&Protocols[0]);
 	}
+#endif 
 	return true;
 }
 
@@ -102,7 +111,9 @@ FWebSocketServer::~FWebSocketServer()
 {
 	if (Context)
 	{
+#if !PLATFORM_HTML5
 		libwebsocket_context_destroy(Context);
+#endif 		
 		Context = NULL;
 	}
 
@@ -112,10 +123,17 @@ FWebSocketServer::~FWebSocketServer()
 
 FString FWebSocketServer::Info()
 {
+
+#if !PLATFORM_HTML5
 	return FString(ANSI_TO_TCHAR(libwebsocket_canonical_hostname(Context)));
+#else 
+	return FString(TEXT("NOT SUPPORTED"));
+#endif 
+
 }
 
 // callback. 
+#if !PLATFORM_HTML5
 int FWebSocket::unreal_networking_server
 	(
 		struct libwebsocket_context *Context, 
@@ -161,5 +179,4 @@ int FWebSocket::unreal_networking_server
 
 	return 0; 
 }
-
 #endif 
