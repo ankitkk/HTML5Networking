@@ -38,19 +38,11 @@ uint8 PREPADDING[LWS_SEND_BUFFER_PRE_PADDING];
 uint8 POSTPADDING[LWS_SEND_BUFFER_POST_PADDING];
 #endif 
 
-// real networking handler. 
-
-// a object of this type is associated by libwebsocket to every connected session. 
-struct PerSessionData
-{
-	uint32	WriteState; 
-	uint32  TotalDataSent; 
-};
 
 #if !PLATFORM_HTML5
 static void libwebsocket_debugLogS(int level, const char *line)
 {
-	UE_LOG(LogHTML5Networking, Warning, TEXT("client: %s"), ANSI_TO_TCHAR(line));
+	UE_LOG(LogHTML5Networking, Log, TEXT("client: %s"), ANSI_TO_TCHAR(line));
 }
 #endif 
 
@@ -71,7 +63,7 @@ FWebSocket::FWebSocket(
 
 	Protocols[0].name = "binary";
 	Protocols[0].callback = FWebSocket::unreal_networking_client;
-	Protocols[0].per_session_data_size = sizeof(PerSessionData);
+	Protocols[0].per_session_data_size = 0;
 	Protocols[0].rx_buffer_size = 10 * 1024 * 1024;
 
 	Protocols[1].name = nullptr;
@@ -207,32 +199,31 @@ void FWebSocket::Tick()
 
 #if PLATFORM_HTML5
 
-	fd_set fdr;
-	fd_set fdw;
-	int res;
+	fd_set Fdr;
+	fd_set Fdw;
+	int Res;
 
 	// make sure that server.fd is ready to read / write
-	FD_ZERO(&fdr);
-	FD_ZERO(&fdw);
-	FD_SET(SockFd, &fdr);
-	FD_SET(SockFd, &fdw);
-	res = select(64, &fdr, &fdw, NULL, NULL);
+	FD_ZERO(&Fdr);
+	FD_ZERO(&Fdw);
+	FD_SET(SockFd, &Fdr);
+	FD_SET(SockFd, &Fdw);
+	Res = select(64, &Fdr, &Fdw, NULL, NULL);
 
-	if (res == -1) {
+	if (Res == -1) {
 		UE_LOG(LogHTML5Networking, Warning, TEXT("Select Failed!"));
 		return;
 	}
 	
-	if (FD_ISSET(SockFd, &fdr)) {
+	if (FD_ISSET(SockFd, &Fdr)) {
 		// we can read! 
-		this->OnRawRecieve(NULL, NULL);
+		OnRawRecieve(NULL, NULL);
 	}
 
-	if (FD_ISSET(SockFd, &fdw)) {
+	if (FD_ISSET(SockFd, &Fdw)) {
 		// we can write
-		this->OnRawWebSocketWritable(NULL);
+		OnRawWebSocketWritable(NULL);
 	}
-
 #endif 
 }
 
@@ -331,8 +322,8 @@ void FWebSocket::OnRawWebSocketWritable(WebSocketInternal* wsi)
 	if (Result == -1)
 	{
 		// we are caught with our pants down. fail. 
-		UE_LOG(LogHTML5Networking, Log, TEXT("Could not write %d bytes"), Packet.Num());
-		this->ErrorCallBack.ExecuteIfBound(); 
+		UE_LOG(LogHTML5Networking, Error, TEXT("Could not write %d bytes"), Packet.Num());
+		ErrorCallBack.ExecuteIfBound(); 
 	}
 	else
 	{

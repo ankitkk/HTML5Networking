@@ -8,17 +8,15 @@ namespace UnrealBuildTool.Rules
 		{
             PrivateDependencyModuleNames.AddRange(
                 new string[] { 
-				    "Core", 
-				    "CoreUObject",
+                    "Core", 
+                    "CoreUObject",
                     "Engine",
-				    "ImageCore",
-				    "Sockets",
+                    "ImageCore",
+                    "Sockets",
                     "OnlineSubSystemUtils",
                     "WebSockets"
                 }
             );
-
-            bFasterWithoutUnity = true; 
 		}
 	}
 }

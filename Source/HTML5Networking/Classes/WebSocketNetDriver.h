@@ -11,13 +11,9 @@ class HTML5NETWORKING_API UWebSocketNetDriver : public UNetDriver
 {
 	GENERATED_UCLASS_BODY()
 
-	/** @todo document */
+	/** Websocket server port*/
 	UPROPERTY(Config)
 	int32 WebSocketPort;
-
-
-	/** Underlying socket communication */
-	FSocket* Socket;
 
 	// Begin UNetDriver interface.
 	virtual bool IsAvailable() const override;
@@ -45,7 +41,7 @@ class HTML5NETWORKING_API UWebSocketNetDriver : public UNetDriver
 	*/
 	bool HandleSocketsCommand(const TCHAR* Cmd, FOutputDevice& Ar, UWorld* InWorld);
 
-	/** @return TCPIP connection to server */
+	/** @return connection to server */
 	class UWebSocketConnection* GetServerConnection();
 
 	/************************************************************************/

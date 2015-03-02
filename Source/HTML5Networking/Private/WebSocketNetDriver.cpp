@@ -64,7 +64,7 @@ bool UWebSocketNetDriver::InitConnect(FNetworkNotify* InNotify, const FURL& Conn
 	}
 
 	// Create new connection.
-	ServerConnection = ConstructObject<UWebSocketConnection>(NetConnectionClass);
+	ServerConnection = NewObject<UWebSocketConnection>(NetConnectionClass);
 
 	TSharedRef<FInternetAddr> InternetAddr = GetSocketSubsystem()->CreateInternetAddr();
 	bool Ok;
@@ -83,7 +83,7 @@ bool UWebSocketNetDriver::InitConnect(FNetworkNotify* InNotify, const FURL& Conn
 	ConnectedCallBack.BindUObject(this, &UWebSocketNetDriver::OnWebSocketServerConnected);
 	WebSocket->SetConnectedCallBack(ConnectedCallBack);
 
-	ServerConnection->InitLocalConnection(this, Socket, ConnectURL, USOCK_Pending);
+	ServerConnection->InitLocalConnection(this, NULL, ConnectURL, USOCK_Pending);
 
 	// Create channel zero.
 	GetServerConnection()->CreateChannel(CHTYPE_Control, 1, 0);
@@ -149,10 +149,10 @@ void UWebSocketNetDriver::ProcessRemoteFunction(class AActor* Actor, UFunction* 
 					bool IsRelevant = true;
 					if ((Function->FunctionFlags & FUNC_NetReliable) == 0)
 					{
-						if (Connection->Viewer)
+						if (Connection->ViewTarget)
 						{
 							FNetViewer Viewer(Connection, 0.f);
-							IsRelevant = Actor->IsNetRelevantFor(Viewer.InViewer, Viewer.Viewer, Viewer.ViewLocation);
+							IsRelevant = Actor->IsNetRelevantFor(Viewer.InViewer, Viewer.ViewTarget, Viewer.ViewLocation);
 						}
 						else
 						{
@@ -233,7 +233,7 @@ void UWebSocketNetDriver::OnWebSocketClientConnected(FWebSocket* ClientWebSocket
 	if (bAcceptingConnection)
 	{
 
-		UWebSocketConnection* Connection = ConstructObject<UWebSocketConnection>(NetConnectionClass);
+		UWebSocketConnection* Connection = NewObject<UWebSocketConnection>(NetConnectionClass);
 		check(Connection); 
 
 		TSharedRef<FInternetAddr> InternetAddr = GetSocketSubsystem()->CreateInternetAddr();

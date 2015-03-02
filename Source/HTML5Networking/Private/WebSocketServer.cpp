@@ -17,7 +17,7 @@
 #endif
 
 // a object of this type is associated by libwebsocket to every connected session. 
-struct PerSessionData
+struct PerSessionDataServer
 {
 	FWebSocket *Socket; // each session is actually a socket to a client
 };
@@ -38,7 +38,7 @@ static int unreal_networking_server(
 #if !UE_BUILD_SHIPPING
 	void libwebsocket_debugLog(int level, const char *line)
 	{ 
-		UE_LOG(LogHTML5Networking, Warning, TEXT("websocket server: %s"), ANSI_TO_TCHAR(line));
+		UE_LOG(LogHTML5Networking, Log, TEXT("websocket server: %s"), ANSI_TO_TCHAR(line));
 	}
 #endif 
 #endif 
@@ -56,7 +56,7 @@ bool FWebSocketServer::Init(uint32 Port, FWebsocketClientConnectedCallBack CallB
 
 	Protocols[0].name = "binary";
 	Protocols[0].callback = FWebSocket::unreal_networking_server;
-	Protocols[0].per_session_data_size = sizeof(PerSessionData);
+	Protocols[0].per_session_data_size = sizeof(PerSessionDataServer);
 	Protocols[0].rx_buffer_size = 10 * 1024 * 1024;
 
 	Protocols[1].name = nullptr;
@@ -87,10 +87,8 @@ bool FWebSocketServer::Init(uint32 Port, FWebsocketClientConnectedCallBack CallB
 
 	ConnectedCallBack = CallBack; 
 
-	return true;
-#else
+#endif
 	return true; 
-#endif 
 }
 
 bool FWebSocketServer::Tick()
@@ -109,16 +107,17 @@ FWebSocketServer::FWebSocketServer()
 
 FWebSocketServer::~FWebSocketServer()
 {
+#if !PLATFORM_HTML5
 	if (Context)
 	{
-#if !PLATFORM_HTML5
+
 		libwebsocket_context_destroy(Context);
-#endif 		
 		Context = NULL;
 	}
 
 	 delete Protocols; 
 	 Protocols = NULL; 
+#endif 		
 }
 
 FString FWebSocketServer::Info()
@@ -144,7 +143,7 @@ int FWebSocket::unreal_networking_server
 		size_t Len
 	)
 {
-	PerSessionData* BufferInfo = (PerSessionData*)User;
+	PerSessionDataServer* BufferInfo = (PerSessionDataServer*)User;
 	FWebSocketServer* Server = (FWebSocketServer*)libwebsocket_context_user(Context);
 
 	switch (Reason)

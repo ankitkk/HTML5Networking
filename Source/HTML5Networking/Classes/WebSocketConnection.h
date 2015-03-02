@@ -9,7 +9,7 @@ UCLASS(transient, config = Engine)
 class HTML5NETWORKING_API UWebSocketConnection : public UNetConnection
 {
 	GENERATED_UCLASS_BODY()
-		// Variables.
+
 	class FWebSocket*			WebSocket; 
 
 	// Begin NetConnection Interface

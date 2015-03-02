@@ -12,6 +12,7 @@ class FWebSocketServer;
 
 typedef struct libwebsocket_context WebSocketInternalContext; 
 typedef struct libwebsocket WebSocketInternal; 
+typedef struct libwebsocket_protocols WebSocketInternalProtocol; 
 
 DECLARE_DELEGATE_TwoParams(FWebsocketPacketRecievedCallBack, void* /*Data*/, int32 /*Data Size*/);
 DECLARE_DELEGATE_OneParam(FWebsocketClientConnectedCallBack, FWebSocket* /*Socket*/);
